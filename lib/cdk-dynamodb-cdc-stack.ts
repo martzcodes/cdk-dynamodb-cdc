@@ -5,28 +5,37 @@ import { Rule } from "aws-cdk-lib/aws-events";
 import { CloudWatchLogGroup } from "aws-cdk-lib/aws-events-targets";
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 
+export interface CdkDynamodbCdcStackProps extends cdk.StackProps {
+  cdcLogs?: boolean;
+  eventSource: string;
+  tableId?: string;
+}
+
 export class CdkDynamodbCdcStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: CdkDynamodbCdcStackProps) {
     super(scope, id, props);
 
-    new Dynamo(this, "MyDynamoTable", {
-      eventSource: "martzcodes",
+    const { eventSource, tableId } = props;
+
+    new Dynamo(this, tableId || 'Table', {
+      eventSource,
       changeDataCapture: {},
     });
 
-    // for demo purposes, we'll just log the events to a CloudWatch Log Group
-    const eventObserver = new LogGroup(this, 'cdcObserver', {
-      logGroupName: '/martzcodes/dynamo-cdc',
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      retention: RetentionDays.ONE_WEEK,
-    });
+    if (props.cdcLogs) {
+      const eventObserver = new LogGroup(this, "cdcObserver", {
+        logGroupName: `/${id}/dynamo-cdc`,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        retention: RetentionDays.ONE_WEEK,
+      });
 
-    new Rule(this, 'eventRule', {
-      eventPattern: {
-        source: ['martzcodes'],
-        detailType: ['dynamo.item.changed'],
-      },
-      targets: [new CloudWatchLogGroup(eventObserver)],
-    });
+      new Rule(this, "eventRule", {
+        eventPattern: {
+          source: [eventSource],
+          detailType: ["dynamo.item.changed"],
+        },
+        targets: [new CloudWatchLogGroup(eventObserver)],
+      });
+    }
   }
 }

@@ -1,8 +1,14 @@
 {
   "name": "@martzcodes/cdk-dynamodb-cdc",
   "version": "0.1.0",
-  "bin": {
-    "cdk-dynamodb-cdc": "bin/cdk-dynamodb-cdc.js"
+  "author": {
+    "email": "matt.martz@gmail.com",
+    "name": "Matt Martz",
+    "url": "https://matt.martz.codes"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/martzcodes/cdc-dynamodb-cdc"
   },
   "scripts": {
     "build": "npm run clean && echo Using TypeScript && tsc --version && tsc --pretty --project tsconfig-publish.json && npm run copy",
