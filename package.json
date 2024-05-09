@@ -1,25 +1,32 @@
 {
-  "name": "cdk-dynamodb-cdc",
+  "name": "@martzcodes/cdk-dynamodb-cdc",
   "version": "0.1.0",
   "bin": {
     "cdk-dynamodb-cdc": "bin/cdk-dynamodb-cdc.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest",
-    "cdk": "cdk"
+    "build": "npm run clean && echo Using TypeScript && tsc --version && tsc --pretty --project tsconfig-publish.json && npm run copy",
+    "clean": "rimraf cdk.out dist",
+    "copy": "cp -r package.json README.md dist/"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.137",
     "@types/jest": "^29.5.12",
     "@types/node": "20.12.7",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
     "aws-cdk": "2.141.0",
+    "esbuild": "^0.21.1",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "~5.4.5"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.572.0",
+    "@aws-sdk/client-eventbridge": "^3.572.0",
+    "@aws-sdk/client-s3": "^3.572.0",
+    "@aws-sdk/s3-request-presigner": "^3.572.0",
+    "@aws-sdk/util-dynamodb": "^3.572.0",
     "aws-cdk-lib": "2.141.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
